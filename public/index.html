@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>SKCET Library Management System</title>
+<link rel="stylesheet" href="/css/style.css"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>"/>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════
+     AUTH PAGE
+════════════════════════════════════════════════════════ -->
+<div id="auth-page" class="auth-wrap">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <div class="auth-logo-icon">📚</div>
+      <h1>SKCET Library</h1>
+      <p>Sri Krishna College of Engineering and Technology</p>
+    </div>
+
+    <div class="auth-tabs">
+      <div class="auth-tab active" id="tab-login" onclick="Auth.showTab('login')">Sign In</div>
+      <div class="auth-tab" id="tab-register" onclick="Auth.showTab('register')">Register</div>
+    </div>
+
+    <!-- Login -->
+    <div id="form-login">
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input type="email" id="l-email" class="form-control" placeholder="you@skcet.ac.in"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <div class="pw-wrap">
+          <input type="password" id="l-pass" class="form-control" placeholder="••••••••"/>
+          <button class="pw-eye" onclick="togglePw('l-pass',this)">👁</button>
+        </div>
+      </div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:4px" onclick="Auth.login()">
+        Sign In →
+      </button>
+      <div class="demo-box">
+        <strong>🔑 Demo Accounts (click to fill)</strong>
+        <div class="demo-row">
+          <span>👑 Admin</span>
+          <button onclick="Auth.fillDemo('admin@skcet.ac.in','password')">Use Admin</button>
+        </div>
+        <div class="demo-row">
+          <span>📋 Librarian</span>
+          <button onclick="Auth.fillDemo('librarian@skcet.ac.in','password')">Use Librarian</button>
+        </div>
+        <div class="demo-row">
+          <span>🎓 Student</span>
+          <button onclick="Auth.fillDemo('bharathi@student.skcet.ac.in','password')">Use Student</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Register -->
+    <div id="form-register" style="display:none">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Full Name *</label>
+          <input type="text" id="r-name" class="form-control" placeholder="Your name"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Roll Number</label>
+          <input type="text" id="r-roll" class="form-control" placeholder="21ECE001"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email Address *</label>
+        <input type="email" id="r-email" class="form-control" placeholder="you@student.skcet.ac.in"/>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Department</label>
+          <select id="r-dept" class="form-control">
+            <option value="">Select dept</option>
+            <option>Computer Science and Engineering</option>
+            <option>Computer Science and Design</option>
+            <option>Electronics and Communication Engineering</option>
+            <option>Electrical and Electronics Engineering</option>
+            <option>Civil Engineering</option>
+            <option>Mechanical Engineering</option>
+            <option>Mechatronics</option>
+            <option>Information Technology</option>
+            <option>Cyber Security</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone</label>
+          <input type="tel" id="r-phone" class="form-control" placeholder="9876543210"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password *</label>
+        <div class="pw-wrap">
+          <input type="password" id="r-pass" class="form-control" placeholder="Min. 6 characters"/>
+          <button class="pw-eye" onclick="togglePw('r-pass',this)">👁</button>
+        </div>
+      </div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="Auth.register()">
+        Create Account →
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     APP SHELL
+════════════════════════════════════════════════════════ -->
+<div id="app" style="display:none">
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-brand">
+      <div class="sb-icon">📚</div>
+      <div class="sb-brand-text">
+        <h2>SKCET Library</h2>
+        <p>Management System v4</p>
+      </div>
+    </div>
+
+    <nav class="sb-nav" id="sb-nav"></nav>
+
+    <div class="sb-footer">
+      <div class="sb-user" onclick="App.go('profile')">
+        <div class="av av-sm" id="sb-av">U</div>
+        <div>
+          <div class="sb-user-name" id="sb-name">User</div>
+          <div class="sb-user-role" id="sb-role">role</div>
+        </div>
+      </div>
+      <button class="sb-action" onclick="App.toggleTheme()" id="theme-btn">
+        <span id="theme-icon">🌙</span> <span id="theme-txt">Dark Mode</span>
+      </button>
+      <button class="sb-action" onclick="Auth.logout()">
+        🚪 Sign Out
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main">
+    <header class="topbar">
+      <div class="topbar-l">
+        <button class="menu-btn" onclick="App.toggleSidebar()">☰</button>
+        <div class="page-title" id="page-title">Dashboard</div>
+      </div>
+      <div class="topbar-r">
+        <!-- Global search (books only) -->
+        <div class="s-wrap" id="g-search" style="display:none">
+          <span style="color:var(--text3);font-size:14px">🔍</span>
+          <input type="text" placeholder="Search books…" id="g-input" oninput="Books.onSearch(this.value)"/>
+        </div>
+        <!-- Notifications -->
+        <div class="notif-wrap" id="notif-wrap">
+          <button class="t-btn" onclick="Notifs.toggle()">
+            🔔<span class="dot-red" id="notif-dot" style="display:none"></span>
+          </button>
+          <div class="notif-panel" id="notif-panel">
+            <div class="notif-hd">
+              <h4>Notifications</h4>
+              <button class="btn btn-xs btn-ghost" onclick="Notifs.markAll()">Mark all read</button>
+            </div>
+            <div id="notif-list"><div class="loader"><div class="spin"></div></div></div>
+          </div>
+        </div>
+        <!-- Theme (topbar shortcut) -->
+        <button class="t-btn" onclick="App.toggleTheme()" title="Toggle theme">🌙</button>
+        <!-- Avatar -->
+        <div class="av av-sm" id="tb-av" style="cursor:pointer" onclick="App.go('profile')">U</div>
+      </div>
+    </header>
+
+    <main class="page" id="page-content">
+      <div class="loader"><div class="spin"></div></div>
+    </main>
+  </div>
+</div>
+
+<!-- Toasts -->
+<div id="toasts"></div>
+<!-- Modal container -->
+<div id="modals"></div>
+<!-- Sidebar overlay -->
+<div id="sb-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:99" onclick="App.closeSidebar()"></div>
+
+<script src="/js/api.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/notifs.js"></script>
+<script src="/js/dashboard.js"></script>
+<script src="/js/books.js"></script>
+<script src="/js/issues.js"></script>
+<script src="/js/users.js"></script>
+<script src="/js/reports.js"></script>
+<script src="/js/app.js"></script>
+</body>
+</html>
