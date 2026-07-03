@@ -16,6 +16,7 @@ const App = (() => {
       { sec: 'Admin' },
       { id: 'users',       label: 'Users',          ic: '👥' },
       { id: 'reports',     label: 'Reports',        ic: '📊' },
+      { id: 'requests',    label: 'Book Requests',  ic: '📋', badge: 'req-badge' },
       { id: 'reservations',label: 'Reservations',   ic: '📌' },
       { id: 'profile',     label: 'My Profile',     ic: '👤' },
     ],
@@ -30,6 +31,7 @@ const App = (() => {
       { sec: 'Users' },
       { id: 'users',       label: 'Students',       ic: '👥' },
       { id: 'reports',     label: 'Reports',        ic: '📊' },
+      { id: 'requests',    label: 'Book Requests',  ic: '📋', badge: 'req-badge' },
       { id: 'profile',     label: 'My Profile',     ic: '👤' },
     ],
     student: [
@@ -37,6 +39,7 @@ const App = (() => {
       { id: 'dashboard',    label: 'My Dashboard',  ic: '🏠' },
       { id: 'books',        label: 'Browse Books',  ic: '📚' },
       { id: 'issues',       label: 'My Issues',     ic: '📋' },
+      { id: 'requests',     label: 'My Requests',   ic: '📝' },
       { id: 'reservations', label: 'Reservations',  ic: '📌' },
       { id: 'profile',      label: 'My Profile',    ic: '👤' },
     ],
@@ -49,6 +52,7 @@ const App = (() => {
       if (item.sec) return `<div class="sb-label">${item.sec}</div>`;
       return `<div class="sb-item ${item.id === _cur ? 'active' : ''}" id="nav-${item.id}" onclick="App.go('${item.id}')">
         <span class="ic">${item.ic}</span>${item.label}
+        ${item.badge ? `<span class="sb-badge" id="${item.badge}" style="display:none">0</span>` : ''}
       </div>`;
     }).join('');
   };
@@ -63,7 +67,8 @@ const App = (() => {
     const titles = {
       dashboard: 'Dashboard', books: 'Book Catalog', issues: 'Issue Records',
       users: 'User Management', reports: 'Reports & Analytics', profile: 'My Profile',
-      'issue-book': 'Issue a Book', 'return-book': 'Return a Book', reservations: 'Reservations',
+      'issue-book': 'Issue a Book', 'return-book': 'Return a Book',
+      reservations: 'Reservations', requests: 'Book Requests',
     };
     document.getElementById('page-title').textContent = titles[page] || page;
 
@@ -79,6 +84,7 @@ const App = (() => {
       case 'issues':       Issues.render();             break;
       case 'users':        Users.render();              break;
       case 'reports':      Reports.render();            break;
+      case 'requests':     Requests.render();           break;
       case 'profile':      _renderProfile();            break;
       case 'issue-book':   go('issues'); setTimeout(()=>Issues.showIssueModal(),100); break;
       case 'return-book':  Issues.renderReturn();       break;
@@ -360,6 +366,7 @@ const App = (() => {
     _buildNav(u.role);
     _applySavedPic();
     Notifs.load();
+    if (u.role !== 'student') Requests.loadBadge();
     go('dashboard');
   };
 
