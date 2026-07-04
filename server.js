@@ -22,7 +22,8 @@ app.use('/api/books',         require('./routes/bookRoutes'));
 app.use('/api/users',         require('./routes/userRoutes'));
 app.use('/api/issues',        require('./routes/issueRoutes'));
 app.use('/api/notifications', require('./routes/notificationRoutes'));
-app.use('/api/requests', require('./routes/requestRoutes'));
+app.use('/api/requests',      require('./routes/requestRoutes'));
+app.use('/api/upload',        require('./routes/uploadRoutes'));
 
 app.get('/api/health', (_,res) => res.json({success:true,message:'SKCET Library API v4'}));
 app.get('*', (_,res) => res.sendFile(path.join(__dirname,'public','index.html')));

@@ -214,19 +214,30 @@ const App = (() => {
     } catch (e) { Toast.error(e.message); }
   };
 
-  /* ── Profile pic (localStorage base64) ──────────────── */
-  const _uploadPic = e => {
-    const file = e.target.files[0]; if (!file) return;
+  /* ── Profile pic (Cloudinary) ───────────────────────── */
+  const _uploadPic = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
     if (file.size > 2 * 1024 * 1024) return Toast.error('Image must be under 2MB.');
-    const reader = new FileReader();
-    reader.onload = ev => {
-      const b64 = ev.target.result;
-      localStorage.setItem(`lms_pic_${Auth.getUser().id}`, b64);
-      _updateAvatars();
-      Toast.success('Profile photo updated!');
+    Toast.info('Uploading photo...');
+    const formData = new FormData();
+    formData.append('photo', file);
+    try {
+      const token = localStorage.getItem('lms_token');
+      const res = await fetch('/api/upload/profile-pic', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` },
+        body: formData,
+      });
+      const data = await res.json();
+      if (!data.success) throw new Error(data.message);
+      const u = Auth.getUser();
+      u.profile_pic = data.photo_url;
+      Auth.setUser(u);
+      _updateAvatarsWithPic(data.photo_url, u);
+      Toast.success('Profile photo updated! ✅');
       _renderProfile();
-    };
-    reader.readAsDataURL(file);
+    } catch (e) { Toast.error(e.message || 'Upload failed.'); }
   };
 
   const _deletePic = () => {
@@ -235,25 +246,32 @@ const App = (() => {
       `<button class="btn btn-outline" onclick="Modal.closeAll()">Cancel</button>
        <button class="btn btn-danger" onclick="App.__doDeletePic()">Remove</button>`);
   };
-  const __doDeletePic = () => {
-    localStorage.removeItem(`lms_pic_${Auth.getUser().id}`);
-    Modal.closeAll();
-    _updateAvatars();
-    Toast.success('Photo removed.');
-    _renderProfile();
+
+  const __doDeletePic = async () => {
+    try {
+      const token = localStorage.getItem('lms_token');
+      await fetch('/api/upload/profile-pic', {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` },
+      });
+      const u = Auth.getUser();
+      u.profile_pic = null;
+      Auth.setUser(u);
+      Modal.closeAll();
+      _updateAvatarsWithPic(null, u);
+      Toast.success('Photo removed.');
+      _renderProfile();
+    } catch (e) { Toast.error(e.message); }
   };
 
   const _applySavedPic = () => {
     const u = Auth.getUser(); if (!u) return;
-    const pic = localStorage.getItem(`lms_pic_${u.id}`);
-    _updateAvatarsWithPic(pic, u);
+    if (u.profile_pic) _updateAvatarsWithPic(u.profile_pic, u);
   };
 
   const _updateAvatars = () => {
     const u = Auth.getUser(); if (!u) return;
-    const pic = localStorage.getItem(`lms_pic_${u.id}`);
-    _updateAvatarsWithPic(pic, u);
-    // Update name in sidebar
+    _updateAvatarsWithPic(u.profile_pic || null, u);
     const sn = document.getElementById('sb-name');
     if (sn) sn.textContent = u.name;
   };
