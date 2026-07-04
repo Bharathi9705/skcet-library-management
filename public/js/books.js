@@ -139,7 +139,7 @@ const Books = (() => {
                   <button class="btn btn-primary btn-icon btn-sm" onclick="Books.showEdit(${b.id})" title="Edit">✏️</button>
                   <button class="btn btn-danger btn-icon btn-sm" onclick="Books.confirmDelete(${b.id})" title="Delete">🗑</button>`
                 :`${avail
-                  ?`<button class="btn btn-success btn-sm" onclick="Books.showDetail(${b.id})">Borrow</button>`
+                  ?`<button class="btn btn-success btn-sm" onclick="Books.requestBook(${b.id})">📋 Request</button>`
                   :`<button class="btn btn-warning btn-sm" onclick="Books.requestBook(${b.id})">📋 Request</button>`}`}
               </div>
             </div>`;
@@ -199,7 +199,7 @@ const Books = (() => {
            ${avail?`<button class="btn btn-primary" onclick="Modal.closeAll();Issues.showIssueModal(${id})">📤 Issue Book</button>`:''}`:
           avail?
           `<button class="btn btn-outline" onclick="Modal.closeAll()">Close</button>
-           <button class="btn btn-success" onclick="Modal.closeAll()">✅ Ask Librarian</button>`:
+           <button class="btn btn-success" onclick="Modal.closeAll();Books.requestBook(${id})">📋 Request Book</button>`:
           `<button class="btn btn-outline" onclick="Modal.closeAll()">Close</button>
            <button class="btn btn-warning" onclick="Modal.closeAll();Books.requestBook(${id})">📋 Request Book</button>`
       );
@@ -210,6 +210,7 @@ const Books = (() => {
   const requestBook = async id => {
     try {
       const { book: b } = await API.get(`/books/${id}`);
+      const avail = b.available_copies > 0;
       const mid = 'req-modal-' + Date.now();
       document.getElementById('modals').insertAdjacentHTML('beforeend', `
         <div class="modal-bg" id="${mid}" onclick="if(event.target.id==='${mid}')Modal.close('${mid}')">
@@ -220,19 +221,24 @@ const Books = (() => {
             </div>
             <div class="modal-body">
               <div style="background:var(--bg);border-radius:10px;padding:14px;margin-bottom:16px">
-                <div style="font-weight:700">${esc(b.title)}</div>
+                <div style="font-weight:700;font-size:.95rem">${esc(b.title)}</div>
                 <div style="font-size:.8rem;color:var(--text2)">by ${esc(b.author)}</div>
-                <div style="margin-top:6px">
-                  <span class="badge b-danger">❌ Not Available (${b.available_copies}/${b.total_copies} copies)</span>
+                <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
+                  <span class="badge ${avail ? 'b-success' : 'b-danger'}">
+                    ${avail ? `✅ ${b.available_copies}/${b.total_copies} copies available` : '❌ Not Available'}
+                  </span>
+                  <span class="badge b-purple">${esc(b.department)}</span>
                 </div>
               </div>
               <div class="form-group">
                 <label class="form-label">Message to Librarian (optional)</label>
-                <textarea id="req-msg" class="form-control" rows="3" 
-                  placeholder="e.g. I need this book for my project..."></textarea>
+                <textarea id="req-msg" class="form-control" rows="3"
+                  placeholder="e.g. I need this book for my project submission..."></textarea>
               </div>
-              <div style="background:#dbeafe;border-radius:8px;padding:10px 14px;font-size:.8rem;color:#1e40af">
-                💡 Librarian will review your request and issue the book when a copy becomes available.
+              <div style="background:${avail ? '#dcfce7' : '#dbeafe'};border-radius:8px;padding:10px 14px;font-size:.8rem;color:${avail ? '#166534' : '#1e40af'}">
+                ${avail
+                  ? '💡 This book is available! Librarian will issue it to you after approving your request.'
+                  : '💡 All copies are issued. Librarian will process your request when a copy is returned.'}
               </div>
             </div>
             <div class="modal-ft">
