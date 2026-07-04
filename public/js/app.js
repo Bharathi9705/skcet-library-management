@@ -98,9 +98,10 @@ const App = (() => {
   /* ── Profile page ────────────────────────────────────── */
   const _renderProfile = async () => {
     const pc = document.getElementById('page-content');
+    // Refresh user from server to get latest profile_pic
+    try { const d = await API.get('/auth/me'); Auth.setUser(d.user); } catch {}
     const u = Auth.getUser();
-    const picKey = `lms_pic_${u.id}`;
-    const savedPic = localStorage.getItem(picKey);
+    const savedPic = u.profile_pic || null;
 
     const avHtml = savedPic
       ? `<img src="${savedPic}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid var(--primary-l)" id="prof-img"/>`
@@ -266,7 +267,9 @@ const App = (() => {
 
   const _applySavedPic = () => {
     const u = Auth.getUser(); if (!u) return;
+    // Use profile_pic from DB (works across all devices)
     if (u.profile_pic) _updateAvatarsWithPic(u.profile_pic, u);
+    else _updateAvatarsWithPic(null, u);
   };
 
   const _updateAvatars = () => {
