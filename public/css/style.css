@@ -336,16 +336,161 @@ select[size] option:disabled{color:var(--text3);}
 .tl-sub{font-size:.75rem;color:var(--text2);margin-top:1px;}
 
 /* ── Responsive ───────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════
+   MOBILE ONLY — Desktop (1024px+) is NOT touched
+   ═══════════════════════════════════════════════════ */
+
+/* ── Tablet (768px - 900px) ───────────────────────── */
 @media(max-width:900px){
-  .sidebar{transform:translateX(-100%);}.sidebar.open{transform:translateX(0);}
-  .main{margin-left:0;}.menu-btn{display:flex;}
-  .page{padding:14px;}.form-row,.form-row-3{grid-template-columns:1fr;}
+  /* Sidebar — slide off screen, toggle via JS */
+  .sidebar{transform:translateX(-100%);box-shadow:none;}
+  .sidebar.open{transform:translateX(0);box-shadow:4px 0 24px rgba(0,0,0,.4);}
+  .main{margin-left:0;}
+  .menu-btn{display:flex;}
+
+  /* Page padding */
+  .page{padding:14px;}
+
+  /* Forms — stack columns */
+  .form-row,.form-row-3{grid-template-columns:1fr;}
+
+  /* Stats — 2 columns on tablet */
   .stats-grid{grid-template-columns:repeat(2,1fr);}
+
+  /* Dashboard grid — stack */
+  .page [style*="grid-template-columns:1fr 380px"],
+  .page [style*="grid-template-columns:1fr 320px"],
+  .page [style*="grid-template-columns:1fr 300px"],
+  .page [style*="grid-template-columns:300px 1fr"],
+  .page [style*="grid-template-columns:1fr 1fr"]{
+    grid-template-columns:1fr !important;
+  }
+
+  /* Table — allow horizontal scroll inside card */
+  .tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  table{min-width:500px;}
+
+  /* Search box */
+  .s-wrap input{width:140px;}
+
+  /* Topbar */
+  .topbar{padding:0 14px;}
+
+  /* Modal — full width on tablet */
+  .modal{max-width:95vw;}
 }
-@media(max-width:500px){
+
+/* ── Mobile (max 600px) ───────────────────────────── */
+@media(max-width:600px){
+  /* Stats — 1 column */
   .stats-grid{grid-template-columns:1fr;}
-  .books-grid{grid-template-columns:repeat(auto-fill,minmax(155px,1fr));}
-  .dept-grid{grid-template-columns:repeat(auto-fill,minmax(145px,1fr));}
-  .auth-card{padding:28px 18px;}
-  .s-wrap input{width:110px;}
+
+  /* Books grid */
+  .books-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;}
+
+  /* Dept grid */
+  .dept-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;}
+
+  /* Auth card */
+  .auth-card{padding:28px 16px;margin:10px;}
+  .auth-logo h1{font-size:1.3rem;}
+  .demo-box{font-size:.72rem;}
+
+  /* Search — smaller on mobile */
+  .s-wrap{padding:5px 10px;}
+  .s-wrap input{width:100px;}
+
+  /* Topbar */
+  .topbar{height:56px;padding:0 12px;}
+  .page-title{font-size:.875rem;}
+
+  /* Page content */
+  .page{padding:12px;}
+
+  /* Page header */
+  .ph{flex-direction:column;align-items:flex-start;gap:8px;}
+  .ph h2{font-size:1.1rem;}
+
+  /* Cards */
+  .card-hd{padding:12px 14px;flex-wrap:wrap;gap:8px;}
+  .card-body{padding:14px;}
+
+  /* Tabs — scrollable */
+  .tabs{overflow-x:auto;-webkit-overflow-scrolling:touch;flex-wrap:nowrap;padding-bottom:2px;}
+  .tab{white-space:nowrap;padding:7px 12px;font-size:.78rem;}
+
+  /* Filters bar */
+  .fbar{gap:6px;}
+  .fsrch{min-width:0;width:100%;}
+  .fsel{font-size:.78rem;}
+
+  /* Buttons — smaller */
+  .btn{padding:7px 13px;font-size:.8rem;}
+  .btn-sm{padding:5px 10px;font-size:.73rem;}
+
+  /* Modal */
+  .modal{border-radius:14px;max-width:100%;margin:0 8px;}
+  .modal-body{padding:16px;}
+  .modal-hd{padding:14px 16px;}
+  .modal-ft{padding:12px 16px;gap:6px;}
+
+  /* Tables inside modals */
+  .modal .tbl-wrap{max-height:300px;overflow-y:auto;}
+
+  /* Profile page */
+  .page [style*="grid-template-columns:300px 1fr"]{
+    grid-template-columns:1fr !important;
+  }
+
+  /* Issue modal selects */
+  select[size]{font-size:.78rem;}
+
+  /* Pagination */
+  .pager{gap:3px;}
+  .pg{width:30px;height:30px;font-size:.75rem;}
+
+  /* Fine banner */
+  .fine-banner{flex-direction:column;gap:8px;text-align:center;}
+  .fine-amt{font-size:1.6rem;}
+
+  /* Return page grid */
+  .page [style*="grid-template-columns:1fr 1fr"]{
+    grid-template-columns:1fr !important;
+  }
+
+  /* Dashboard right panel */
+  .page [style*="grid-template-columns:1fr 380px"],
+  .page [style*="grid-template-columns:1fr 320px"],
+  .page [style*="grid-template-columns:1fr 300px"]{
+    grid-template-columns:1fr !important;
+  }
+
+  /* Hide less important table columns on mobile */
+  table th:nth-child(4),
+  table td:nth-child(4){display:none;}
+
+  /* Notification panel */
+  .notif-panel{width:290px;right:-10px;}
+
+  /* Toasts */
+  #toasts{bottom:14px;right:14px;left:14px;}
+  .toast{max-width:100%;}
+
+  /* Overflow prevention */
+  body{overflow-x:hidden;}
+  .main{overflow-x:hidden;}
+}
+
+/* ── Small mobile (max 380px) ─────────────────────── */
+@media(max-width:380px){
+  .auth-card{padding:22px 14px;}
+  .books-grid{grid-template-columns:1fr 1fr;}
+  .dept-grid{grid-template-columns:1fr 1fr;}
+  .stats-grid{grid-template-columns:1fr;}
+  .s-wrap{display:none;}
+  .topbar-r .t-btn:not(.notif-wrap .t-btn){display:none;}
+  .page{padding:10px;}
+  .btn{padding:6px 10px;}
+  .modal-ft{flex-direction:column;}
+  .modal-ft .btn{width:100%;justify-content:center;}
 }
