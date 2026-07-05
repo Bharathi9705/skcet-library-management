@@ -42,7 +42,7 @@ class User {
   }
 
   static async update(id, fields) {
-    const allowed = ['name','email','role','roll_number','department','phone','is_active'];
+    const allowed = ['name','email','role','roll_number','department','phone','is_active','profile_pic'];
     const sets=[]; const vals=[];
     for(const k of allowed){ if(fields[k]!==undefined){ sets.push(`${k}=?`); vals.push(fields[k]); } }
     if(!sets.length) return false;

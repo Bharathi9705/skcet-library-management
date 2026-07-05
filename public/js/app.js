@@ -281,6 +281,7 @@ const App = (() => {
 
   const _updateAvatarsWithPic = (pic, u) => {
     const init = u.name[0].toUpperCase();
+    // Update sidebar + topbar avatars
     ['sb-av', 'tb-av'].forEach(id => {
       const el = document.getElementById(id); if (!el) return;
       if (pic) {
@@ -293,6 +294,15 @@ const App = (() => {
         el.textContent = init;
       }
     });
+    // Update profile page image if visible
+    const profImg = document.getElementById('prof-img');
+    if (profImg) {
+      if (pic) {
+        profImg.outerHTML = `<img id="prof-img" src="${pic}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid var(--primary-l)"/>`;
+      } else {
+        profImg.outerHTML = `<div id="prof-img" class="av av-lg" style="margin:0 auto">${init}</div>`;
+      }
+    }
   };
 
   /* ── Reservations page ───────────────────────────────── */
